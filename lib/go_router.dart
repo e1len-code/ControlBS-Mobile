@@ -1,3 +1,4 @@
+import 'package:controlbs_mobile/config_theme.dart';
 import 'package:controlbs_mobile/details.dart';
 import 'package:controlbs_mobile/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,12 @@ final GoRouter router = GoRouter(
           path: 'details',
           builder: (BuildContext context, GoRouterState state) {
             return const DetailsScreen();
+          },
+        ),
+        GoRoute(
+          path: 'configtheme',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ConfigThemeScreen();
           },
         ),
       ],

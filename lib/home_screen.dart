@@ -13,8 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   ThemeMode themeMode = ThemeMode.system;
-  ThemeStuff appValueNotifier = ThemeStuff.instance;
-  ChangeIconTheme appValueNotifierIcon = ChangeIconTheme.instance;
+  ThemeStuff appValueNotifier = ThemeStuff.instance();
 
   String theme = "dark";
   @override
@@ -27,25 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextStyle(color: Theme.of(context).colorScheme.onBackground)),
         actions: [
           TextButton(
-              onPressed: () {
-                setState(() {
-                  if (theme != "dark") {
-                    appValueNotifier.updateValue(appValueNotifier.dark);
-                    theme = "dark";
-                  } else {
-                    appValueNotifier.updateValue(appValueNotifier.light);
-                    theme = "light";
-                  }
-                  appValueNotifierIcon.updateValue(theme);
-                });
-              },
-              child: ValueListenableBuilder(
-                  valueListenable: appValueNotifierIcon.icon,
-                  builder: (context, value, child) {
-                    return Icon("dark" == appValueNotifierIcon.icon.value
-                        ? Icons.dark_mode
-                        : Icons.light_mode);
-                  }))
+              onPressed: () => context.go('/configtheme'),
+              child: Icon("dark" == theme ? Icons.dark_mode : Icons.light_mode))
         ],
       ),
       body: Center(
