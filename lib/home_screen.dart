@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           TextButton(
               onPressed: () => context.go('/configtheme'),
-              child: Icon("dark" == theme ? Icons.dark_mode : Icons.light_mode))
+              child: const Icon(Icons.brush_outlined))
         ],
       ),
       body: Center(
