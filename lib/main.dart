@@ -1,6 +1,7 @@
 import 'package:controlbs_mobile/color_schemes.g.dart';
 import 'package:controlbs_mobile/theme_stuff.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'go_router.dart';
 
@@ -18,10 +19,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    ThemeData dark =
-        ThemeData(useMaterial3: true, colorScheme: darkColorScheme);
-    ThemeData light =
-        ThemeData(useMaterial3: true, colorScheme: lightColorScheme);
+    ThemeData dark = ThemeData(
+      useMaterial3: true,
+      colorScheme: darkColorScheme,
+      fontFamily: GoogleFonts.lato().fontFamily,
+    );
+    ThemeData light = ThemeData(
+      useMaterial3: true,
+      colorScheme: lightColorScheme,
+      fontFamily: GoogleFonts.lato().fontFamily,
+    );
 
     ThemeStuff appValueNotifier = ThemeStuff.instance();
     return ValueListenableBuilder(
