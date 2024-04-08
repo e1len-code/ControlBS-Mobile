@@ -1,5 +1,6 @@
 import 'package:controlbs_mobile/config_theme.dart';
 import 'package:controlbs_mobile/details.dart';
+import 'package:controlbs_mobile/features/auth/presentation/page/auth_page.dart';
 import 'package:controlbs_mobile/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +23,12 @@ final GoRouter router = GoRouter(
           path: 'configtheme',
           builder: (BuildContext context, GoRouterState state) {
             return const ConfigThemeScreen();
+          },
+        ),
+        GoRoute(
+          path: 'login',
+          builder: (BuildContext context, GoRouterState state) {
+            return const AuthPage();
           },
         ),
       ],
