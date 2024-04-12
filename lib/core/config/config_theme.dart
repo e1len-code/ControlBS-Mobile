@@ -1,4 +1,4 @@
-import 'package:controlbs_mobile/theme_stuff.dart';
+import 'package:controlbs_mobile/core/config/theme_stuff.dart';
 import 'package:flutter/material.dart';
 
 enum ThemeConfig { light, dark, system }

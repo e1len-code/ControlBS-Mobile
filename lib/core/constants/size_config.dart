@@ -35,3 +35,5 @@ const double imageMaxHeight = 1280; //680
 const double imageMaxWidth = 960; //480
 
 const double opacityColor = 0.8;
+
+const int timeout = 20; //it seconds

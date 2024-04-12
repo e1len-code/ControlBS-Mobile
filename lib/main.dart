@@ -1,12 +1,19 @@
-import 'package:controlbs_mobile/color_schemes.g.dart';
-import 'package:controlbs_mobile/theme_stuff.dart';
+import 'package:controlbs_mobile/core/constants/color_schemes.g.dart';
+import 'package:controlbs_mobile/core/config/theme_stuff.dart';
+import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
+import 'package:controlbs_mobile/injections.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'injections.dart' as di;
+import 'core/routes/go_router.dart';
 
-import 'go_router.dart';
-
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => getIt<AuthProvider>())],
+      child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {

@@ -6,11 +6,12 @@ class InputPasswordWidget extends StatefulWidget {
       required this.label,
       this.controller,
       this.suffixIcon,
-      readonly});
+      this.readOnly = false});
 
   final String label;
   final TextEditingController? controller;
   final Widget? suffixIcon;
+  final bool readOnly;
 
   @override
   State<InputPasswordWidget> createState() => _InputPasswordWidgetState();

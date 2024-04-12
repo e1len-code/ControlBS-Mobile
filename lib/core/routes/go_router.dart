@@ -1,4 +1,4 @@
-import 'package:controlbs_mobile/config_theme.dart';
+import 'package:controlbs_mobile/core/config/config_theme.dart';
 import 'package:controlbs_mobile/details.dart';
 import 'package:controlbs_mobile/features/auth/presentation/page/auth_page.dart';
 import 'package:controlbs_mobile/home_screen.dart';
