@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: const Text('INICIAR SESIÓN'),
                           )
                         : ElevatedButton(
-                            onPressed: () => context.go('/details'),
+                            onPressed: () => context.go('/attendanceFilter'),
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context)
                                     .colorScheme

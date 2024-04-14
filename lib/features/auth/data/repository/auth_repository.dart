@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:controlbs_mobile/core/errors/exceptions.dart';
 import 'package:controlbs_mobile/core/errors/failures.dart';
+import 'package:controlbs_mobile/core/network/headers.dart';
 import 'package:controlbs_mobile/core/utils/response_model.dart';
 import 'package:controlbs_mobile/features/auth/data/datasource/auth_remote_data.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_response.dart';
+import 'package:controlbs_mobile/injections.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
@@ -26,6 +28,9 @@ class AuthRespositoryImple implements AuthRepository {
       bool connected = await InternetConnection().hasInternetAccess;
       if (connected) {
         final response = await remoteData.auth(authRequest);
+        getIt<Headers>()
+            .addHeader('Authorization', 'bearer ${response.value.token}');
+
         return Right(response);
       } else {
         return Left(ConexionInternetFailure());

@@ -1,5 +1,6 @@
 import 'package:controlbs_mobile/core/constants/color_schemes.g.dart';
 import 'package:controlbs_mobile/core/config/theme_stuff.dart';
+import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
 import 'package:controlbs_mobile/injections.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +12,10 @@ import 'core/routes/go_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
-  runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => getIt<AuthProvider>())],
-      child: const MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => getIt<AuthProvider>()),
+    ChangeNotifierProvider(create: (_) => getIt<AttendanceProvider>())
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
