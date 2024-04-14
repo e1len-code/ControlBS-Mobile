@@ -8,7 +8,6 @@ import 'package:controlbs_mobile/features/attendance/domain/entities/attendance.
 import 'package:controlbs_mobile/features/attendance/domain/entities/attendance_req.dart';
 import 'package:controlbs_mobile/features/attendance/domain/entities/attendance_resp.dart';
 import 'package:controlbs_mobile/injections.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 abstract class AttendanceRemoteData {

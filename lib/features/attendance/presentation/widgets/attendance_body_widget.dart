@@ -25,7 +25,7 @@ class _AttendanceBodyWidgetState extends State<AttendanceBodyWidget> {
     attendanceProvider = context.read<AttendanceProvider>();
     authProvider = context.read<AuthProvider>();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       attendanceProvider.filterList(AttendanceReq(
         persIden: authProvider.authResponse.id,
         attnDtIn: DateTime.now(),
