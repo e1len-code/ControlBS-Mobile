@@ -2,10 +2,8 @@ import 'package:controlbs_mobile/core/constants/size_config.dart';
 import 'package:controlbs_mobile/core/widgets/input_password_widget.dart';
 import 'package:controlbs_mobile/core/widgets/input_widget.dart';
 import 'package:controlbs_mobile/core/widgets/title_widget.dart';
-import 'package:controlbs_mobile/features/auth/data/repository/auth_repository.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart';
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
-import 'package:controlbs_mobile/injections.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +19,6 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   //AuthRepository authRepository = AuthRespositoryImple(remoteData: );
-  AuthRepository authRepository = getIt<AuthRepository>();
   late final AuthProvider authProvider;
 
   _sendLogin() {

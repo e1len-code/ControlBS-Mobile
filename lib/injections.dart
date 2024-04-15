@@ -3,6 +3,7 @@ import 'package:controlbs_mobile/features/attendance/data/datasource/attendance_
 import 'package:controlbs_mobile/features/attendance/data/repository/attendance_repository.dart';
 import 'package:controlbs_mobile/features/attendance/domain/useCase/attendance_usecase.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
+import 'package:controlbs_mobile/features/auth/data/datasource/auth_local_data.dart';
 import 'package:controlbs_mobile/features/auth/domain/useCase/auth_usecase.dart';
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
 import 'package:http/http.dart' as client;
@@ -22,7 +23,7 @@ Future<void> init() async {
       () => AttendanceUseCaseImple(repository: getIt()));
 
   getIt.registerLazySingleton<AuthRepository>(
-      () => AuthRespositoryImple(remoteData: getIt()));
+      () => AuthRespositoryImple(remoteData: getIt(), localData: getIt()));
   getIt.registerLazySingleton<AttendanceRepository>(
       () => AttendanceRepositoryImple(remoteData: getIt()));
 
@@ -31,6 +32,7 @@ Future<void> init() async {
   getIt.registerLazySingleton<AttendanceRemoteData>(
       () => AttendanceRemoteDataImple(client: getIt()));
 
+  getIt.registerLazySingleton<AuthLocalData>(() => AuthLocalDataImple());
   getIt.registerLazySingleton(() => client.Client());
   getIt.registerLazySingleton(() => Headers());
 }

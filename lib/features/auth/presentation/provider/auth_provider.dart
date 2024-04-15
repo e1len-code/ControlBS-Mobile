@@ -18,8 +18,21 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     final auth = await useCase.authLogin(authRequest);
-    auth.fold((failure) => error = failure.message,
-        (auth) => authResponse = auth.value!);
+    auth.fold(
+        (failure) => error = failure.message, (auth) => authResponse = auth!);
+    isLoading = false;
+    notifyListeners();
+    return authResponse;
+  }
+
+  Future<AuthResponse> authLoginLocal() async {
+    isLoading = true;
+    error = '';
+    notifyListeners();
+
+    final auth = await useCase.authLoginLocal();
+    auth.fold(
+        (failure) => error = failure.message, (auth) => authResponse = auth!);
     isLoading = false;
     notifyListeners();
     return authResponse;

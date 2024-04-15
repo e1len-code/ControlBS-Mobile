@@ -1,4 +1,5 @@
 import 'package:controlbs_mobile/core/constants/size_config.dart';
+import 'package:controlbs_mobile/core/widgets/checkbox_widget.dart';
 import 'package:controlbs_mobile/core/widgets/title_widget.dart';
 import 'package:controlbs_mobile/core/config/theme_stuff.dart';
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
@@ -18,14 +19,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   ThemeMode themeMode = ThemeMode.system;
   ThemeStuff appValueNotifier = ThemeStuff.instance();
-  //late final AuthProvider authProvider;
+  late final AuthProvider authProvider;
 
   String theme = "dark";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //authProvider = context.read<AuthProvider>();
+    authProvider = context.read<AuthProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authProvider.authLoginLocal();
+    });
   }
 
   @override
