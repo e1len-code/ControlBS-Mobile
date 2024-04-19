@@ -3,7 +3,7 @@ import 'package:controlbs_mobile/features/attendance/presentation/widgets/attend
 import 'package:flutter/material.dart';
 
 class AttendanceListWidget extends StatelessWidget {
-  final List<AttendanceResp?> attendanceList;
+  final Map<String, List<AttendanceResp?>> attendanceList;
   final bool isSearching;
   const AttendanceListWidget(
       {Key? key, required this.attendanceList, this.isSearching = false})
@@ -17,7 +17,9 @@ class AttendanceListWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
         itemBuilder: (context, index) {
           return AttendanceItemWidget(
-              attendance: attendanceList[index]!, isSearching: isSearching);
+            dateTime: attendanceList.keys.elementAt(index),
+            list: attendanceList[attendanceList.keys.elementAt(index)]!,
+          );
         },
         itemCount: attendanceList.length,
       ),

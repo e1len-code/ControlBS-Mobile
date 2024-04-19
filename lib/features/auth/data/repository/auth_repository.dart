@@ -17,6 +17,7 @@ abstract class AuthRepository {
       AuthRequest authRequest);
   Future<Either<Failure, AuthResponse?>> verifyLogin();
   Future<void> saveAuth(AuthRequest authRequest);
+  Future<void> delete();
 }
 
 class AuthRespositoryImple implements AuthRepository {
@@ -83,5 +84,10 @@ class AuthRespositoryImple implements AuthRepository {
   @override
   Future<void> saveAuth(AuthRequest authRequest) async {
     await localData.saveAuth(authRequest);
+  }
+
+  @override
+  Future<void> delete() async {
+    await localData.delete();
   }
 }

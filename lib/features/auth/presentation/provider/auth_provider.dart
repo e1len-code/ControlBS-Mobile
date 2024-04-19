@@ -40,6 +40,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> logOut() async {
     authResponse = AuthResponse(id: 0);
+    useCase.delete();
     notifyListeners();
   }
 }

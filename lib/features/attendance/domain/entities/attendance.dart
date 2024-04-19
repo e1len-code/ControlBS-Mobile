@@ -1,24 +1,29 @@
+import 'package:controlbs_mobile/core/utils/datetime_parsing.dart';
+
 class Attendance {
   final int attnIden;
   final int persIden;
-  final String attnUbic;
+  final int attnline;
+  String? attnUbic;
   final DateTime attnDate;
-  final String attnIp;
+  final String attnObse;
 
   Attendance(
       {required this.attnIden,
       required this.persIden,
+      required this.attnline,
       required this.attnUbic,
       required this.attnDate,
-      required this.attnIp});
+      this.attnObse = "CORRECTO"});
 
   Map<String, dynamic> toJson() {
     return {
       'attniden': attnIden,
       'persiden': persIden,
+      'attnline': attnline,
       'attnubic': attnUbic,
-      'attndate': attnDate,
-      'attnIp': attnIp
+      'attndate': dateTimeFormatJson(attnDate),
+      'attnobse': attnObse
     };
   }
 }

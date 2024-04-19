@@ -4,6 +4,7 @@ import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart
 abstract class AuthLocalData {
   Future<AuthRequest> getAuth();
   Future<void> saveAuth(AuthRequest auth);
+  Future<void> delete();
 }
 
 class AuthLocalDataImple implements AuthLocalData {
@@ -18,5 +19,11 @@ class AuthLocalDataImple implements AuthLocalData {
   Future<void> saveAuth(AuthRequest auth) async {
     await StorageManager.saveData('userName', auth.userName);
     await StorageManager.saveData('password', auth.password);
+  }
+
+  @override
+  Future<void> delete() async {
+    await StorageManager.deleteData('userName');
+    await StorageManager.deleteData('password');
   }
 }

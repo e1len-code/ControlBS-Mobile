@@ -1,6 +1,6 @@
 class AuthRequest {
   final String? userName;
-  final String? password;
+  String? password;
 
   AuthRequest({this.userName, this.password});
   Map<String, dynamic> toJson() {

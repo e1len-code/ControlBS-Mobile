@@ -11,7 +11,7 @@ import 'package:controlbs_mobile/injections.dart';
 import 'package:http/http.dart' as http;
 
 abstract class AttendanceRemoteData {
-  Future<Data<bool?>> save(Attendance attendance);
+  Future<bool?> save(Attendance attendance);
   Future<List<AttendanceResp?>> filter(AttendanceReq attendanceReq);
 }
 
@@ -20,7 +20,7 @@ class AttendanceRemoteDataImple implements AttendanceRemoteData {
   AttendanceRemoteDataImple({required this.client});
 
   @override
-  Future<Data<bool?>> save(Attendance attendance) async {
+  Future<bool?> save(Attendance attendance) async {
     final uri = Uri.parse('http://controlBS.somee.com/attendance');
     var response = await client
         .post(uri,
@@ -29,14 +29,18 @@ class AttendanceRemoteDataImple implements AttendanceRemoteData {
         .timeout(const Duration(seconds: timeout),
             onTimeout: () => throw TimeOutException());
     final data = Data.fromJson(jsonDecode(response.body),
-        (value) => response.statusCode == 200 ? bool.tryParse(value) : null);
+        (value) => response.statusCode == 200 ? valueBool(value) : null);
     if (response.statusCode == 200) {
-      return data;
+      return data.value;
     } else {
       throw ApiResponseException(
           statusCode: response.statusCode,
           firstMessageError: data.errors.first.message);
     }
+  }
+
+  bool valueBool(bool value) {
+    return value;
   }
 
   @override

@@ -2,6 +2,8 @@ import 'package:controlbs_mobile/core/constants/size_config.dart';
 import 'package:controlbs_mobile/core/widgets/input_password_widget.dart';
 import 'package:controlbs_mobile/core/widgets/input_widget.dart';
 import 'package:controlbs_mobile/core/widgets/title_widget.dart';
+import 'package:controlbs_mobile/features/attendance/domain/entities/attendance_req.dart';
+import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart';
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController _passController = TextEditingController();
   //AuthRepository authRepository = AuthRespositoryImple(remoteData: );
   late final AuthProvider authProvider;
+  late final AttendanceProvider attendanceProvider;
 
   _sendLogin() {
     authProvider
@@ -28,6 +31,8 @@ class _AuthPageState extends State<AuthPage> {
         .then((value) {
       if (value.id != 0) {
         GoRouter.of(context).go('/');
+        attendanceProvider.getAttendance(AttendanceReq(
+            persIden: value.id, attnDtIn: DateTime.now(), atttnDtFn: null));
       } else {}
     });
   }
@@ -36,6 +41,7 @@ class _AuthPageState extends State<AuthPage> {
   void initState() {
     super.initState();
     authProvider = context.read<AuthProvider>();
+    attendanceProvider = context.read<AttendanceProvider>();
   }
 
   @override

@@ -67,7 +67,7 @@ class _AttendanceBodyWidgetState extends State<AttendanceBodyWidget> {
                 return attendanceProvider.isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : AttendanceListWidget(
-                        attendanceList: attendanceProvider.listFilter,
+                        attendanceList: attendanceProvider.listFilterMapDates,
                       );
               }))
             ]));
