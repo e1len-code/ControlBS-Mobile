@@ -1,4 +1,6 @@
 import 'package:collection/collection.dart';
+import 'package:controlbs_mobile/core/config/valueListenables/checkbox_status.dart';
+import 'package:controlbs_mobile/core/config/valueListenables/time_status.dart';
 import 'package:controlbs_mobile/core/widgets/checkbox_widget.dart';
 import 'package:controlbs_mobile/features/attendance/domain/entities/attendance_resp.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,10 @@ class AttendanceCheckBoxWidget extends StatefulWidget {
 }
 
 class AttendanceCheckBoxWidgetState extends State<AttendanceCheckBoxWidget> {
+  TimeStatusVListenable timeStatusVListenable =
+      TimeStatusVListenable.instance();
+  CheckBoxStatusVListenable checkBoxStatusVListenable =
+      CheckBoxStatusVListenable.instance();
   int nroCheckBoxSelected = 0;
   List<GlobalKey<CheckBoxWidgetState>> keyCap =
       List<GlobalKey<CheckBoxWidgetState>>.generate(
@@ -24,16 +30,27 @@ class AttendanceCheckBoxWidgetState extends State<AttendanceCheckBoxWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      checkBoxStatusVListenable.statusCheckName(nroCheckBoxSelected);
+    });
   }
 
   get nroCheckBoxSelectedF => _searchNroCheckSelected();
-
+  get isAllCheckBoxDisabled => isDisabledCheckBoxes();
   int _searchNroCheckSelected() {
     GlobalKey<CheckBoxWidgetState>? keyCheckBoxSelected =
         keyCap.firstWhereOrNull((element) => element.currentState!.selected);
     nroCheckBoxSelected = (keyCheckBoxSelected == null)
         ? 0
         : keyCheckBoxSelected.currentState!.nroLine;
+    if (nroCheckBoxSelected == 0) {
+      keyCheckBoxSelected = keyCap.firstWhereOrNull(
+          (element) => element.currentState!.widget.disabled == false);
+      nroCheckBoxSelected = (keyCheckBoxSelected == null)
+          ? 0
+          : keyCheckBoxSelected.currentState!.nroLine;
+      return nroCheckBoxSelected;
+    }
     return nroCheckBoxSelected;
   }
 
@@ -41,7 +58,32 @@ class AttendanceCheckBoxWidgetState extends State<AttendanceCheckBoxWidget> {
     for (var e in keyCap) {
       e.currentState!.selected = false;
     }
-    print(keyCap.map((e) => e.currentState!.selected).toList());
+  }
+
+  bool isDisabledCheckBoxes() {
+    bool isDisabled = false;
+    for (var key in keyCap) {
+      isDisabled = isDisabled || key.currentState!.widget.disabled;
+    }
+    return isDisabled;
+  }
+
+  bool getCorrectHour(int i) {
+    switch (i) {
+      case 1:
+        return timeStatusVListenable.timeStatus.value.hour >= 8 &&
+            timeStatusVListenable.timeStatus.value.hour < 12;
+      case 2:
+        return timeStatusVListenable.timeStatus.value.hour >= 12 &&
+            timeStatusVListenable.timeStatus.value.hour < 14;
+      case 3:
+        return timeStatusVListenable.timeStatus.value.hour >= 13 &&
+            timeStatusVListenable.timeStatus.value.hour < 18;
+      case 4:
+        return timeStatusVListenable.timeStatus.value.hour >= 18;
+      default:
+        return false;
+    }
   }
 
   List<Widget> list(List<AttendanceResp?> listAttendance) {
@@ -57,13 +99,20 @@ class AttendanceCheckBoxWidgetState extends State<AttendanceCheckBoxWidget> {
           hour: att.attnDate,
           nroLine: i,
         ));
+        nroCheckBoxSelected = i;
       } else {
         list.add(CheckBoxWidget(
           key: keyCap[i - 1],
-          disabled: false,
+          disabled: !(getCorrectHour(i)),
           nroLine: i,
           cleanSelected: cleanSelected,
         ));
+      }
+      if (i != 3 && getCorrectHour(i)) {
+        nroCheckBoxSelected++;
+      }
+      if (i == 3 && getCorrectHour(i)) {
+        nroCheckBoxSelected == 2;
       }
     }
     return list;
@@ -71,10 +120,14 @@ class AttendanceCheckBoxWidgetState extends State<AttendanceCheckBoxWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      // mainAxisSize: MainAxisSize.min,
-      children: list(widget.listAttendance),
-    );
+    return ValueListenableBuilder(
+        valueListenable: timeStatusVListenable.timeStatus,
+        builder: (context, value, child) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisSize: MainAxisSize.min,
+            children: list(widget.listAttendance),
+          );
+        });
   }
 }

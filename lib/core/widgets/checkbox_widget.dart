@@ -1,3 +1,4 @@
+import 'package:controlbs_mobile/core/config/valueListenables/checkbox_status.dart';
 import 'package:controlbs_mobile/core/constants/size_config.dart';
 import 'package:controlbs_mobile/core/utils/datetime_parsing.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +21,15 @@ class CheckBoxWidget extends StatefulWidget {
 }
 
 class CheckBoxWidgetState extends State<CheckBoxWidget> {
+  CheckBoxStatusVListenable checkBoxValueNotifier =
+      CheckBoxStatusVListenable.instance();
   bool selected = false;
 
   get nroLine => widget.nroLine;
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
       child: Column(
         children: [
           (!widget.disabled)
@@ -36,6 +39,7 @@ class CheckBoxWidgetState extends State<CheckBoxWidget> {
                         ? widget.cleanSelected!.call()
                         : null;
                     selected = true;
+                    checkBoxValueNotifier.updateValue(nroLine);
                   },
                   // onTap: widget.cleanSelected.call(),
                   child: Container(

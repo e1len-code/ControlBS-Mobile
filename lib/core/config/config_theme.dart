@@ -1,4 +1,5 @@
-import 'package:controlbs_mobile/core/config/theme_stuff.dart';
+import 'package:controlbs_mobile/core/config/valueListenables/checkbox_status.dart';
+import 'package:controlbs_mobile/core/config/valueListenables/theme_stuff.dart';
 import 'package:flutter/material.dart';
 
 enum ThemeConfig { light, dark, system }
@@ -15,7 +16,10 @@ class ConfigThemeScreen extends StatefulWidget {
 class _ConfigThemeScreenState extends State<ConfigThemeScreen> {
   ThemeMode themeMode = ThemeMode.system;
   ThemeStuff appValueNotifier = ThemeStuff.instance();
+  CheckBoxStatusVListenable checkBoxStatusVListenable =
+      CheckBoxStatusVListenable.instance();
   String theme = ThemeMode.system.name;
+
   ThemeConfig? _groceryItem = ThemeConfig.system;
 
   ThemeMode getTheme(ThemeConfig themeConfig) {

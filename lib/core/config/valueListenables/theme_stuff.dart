@@ -1,3 +1,4 @@
+import 'package:controlbs_mobile/core/config/valueListenables/checkbox_status.dart';
 import 'package:flutter/material.dart';
 
 class ThemeStuff {
@@ -17,6 +18,11 @@ class ThemeStuff {
 
   void updateValue(ThemeMode themes) {
     theme.value = themes;
+    CheckBoxStatusVListenable checkBoxStatusVListenable =
+        CheckBoxStatusVListenable.instance();
+    checkBoxStatusVListenable.updateTheme(themes.name);
+    checkBoxStatusVListenable
+        .statusCheckName(checkBoxStatusVListenable.statusCheck.value);
     print(theme.value);
   }
 }

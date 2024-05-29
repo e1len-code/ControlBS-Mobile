@@ -31,6 +31,11 @@ dependencies:
   encrypt: ^5.0.3
   network_info_plus: ^5.0.3
   flutter_launcher_icons: ^0.13.1
+  flutter_svg: ^1.1.6
+  flutter_local_notifications: ^17.1.2
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.10
+  hand_signature: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -45,3 +50,5 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/

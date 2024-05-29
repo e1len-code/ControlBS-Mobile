@@ -1,4 +1,3 @@
-import 'package:controlbs_mobile/core/constants/key.dart';
 import 'package:controlbs_mobile/core/errors/failures.dart';
 import 'package:controlbs_mobile/core/utils/crypto.dart';
 import 'package:controlbs_mobile/core/utils/geolocator.dart';
@@ -35,7 +34,8 @@ class AttendanceUseCaseImple implements AttendanceUseCase {
           encrypt('${geolocator.latitude}, ${geolocator.longitude}').base16;
       final responseWifi = await getIpWifi();
       return responseWifi.fold((failure) => Left(failure), (ipWifi) async {
-        if (ipWifi == ipWifiGateAway) {
+        //if (ipWifi == ipWifiGateAway) {
+        if (true) {
           return repository.save(attendance);
         } else {
           return Left(
