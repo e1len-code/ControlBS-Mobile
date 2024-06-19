@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 abstract class FileRemoteData {
   Future<bool?> save(File attendance);
+  Future<String?> getPhoto(String filePath);
 }
 
 class FileRemoteDataImple implements FileRemoteData {
@@ -36,7 +37,29 @@ class FileRemoteDataImple implements FileRemoteData {
     }
   }
 
+  @override
+  Future<String?> getPhoto(String filePath) async {
+    final uri = Uri.parse('http://controlBS.somee.com/file/getPhoto/$filePath');
+    var response = await client
+        .get(uri, headers: getIt<Headers>().headers)
+        .timeout(const Duration(seconds: timeout),
+            onTimeout: () => throw TimeOutException());
+    final data = Data.fromJson(jsonDecode(response.body),
+        (value) => response.statusCode == 200 ? valueString(value) : null);
+    if (response.statusCode == 200) {
+      return data.value;
+    } else {
+      throw ApiResponseException(
+          statusCode: response.statusCode,
+          firstMessageError: data.errors.first.message);
+    }
+  }
+
   bool valueBool(bool value) {
+    return value;
+  }
+
+  String valueString(String value) {
     return value;
   }
 }

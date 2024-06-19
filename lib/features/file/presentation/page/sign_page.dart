@@ -97,11 +97,11 @@ class _SignPageState extends State<SignPage> {
                             fit: true,
                           );
                         },
-                        child: Text('export'),
+                        child: const Text('export'),
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16.0,
                   ),
                 ],

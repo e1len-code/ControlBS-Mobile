@@ -9,6 +9,7 @@ class FileProvider with ChangeNotifier {
   bool isLoading = false;
   String error = '';
   bool saved = false;
+  String? photoImg;
 
   Future<bool> save(File attendance) async {
     isLoading = true;
@@ -19,5 +20,16 @@ class FileProvider with ChangeNotifier {
     isLoading = false;
     notifyListeners();
     return saved;
+  }
+
+  Future<String?> getPhoto(String filePath) async {
+    isLoading = true;
+    notifyListeners();
+    final result = await useCase.getPhoto(filePath);
+    result.fold(
+        (failure) => error = failure.message, (photo) => photoImg = photo);
+    isLoading = false;
+    notifyListeners();
+    return error;
   }
 }
