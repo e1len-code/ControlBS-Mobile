@@ -14,3 +14,16 @@ class TitleWidget extends StatelessWidget {
     );
   }
 }
+
+class SubTitleWidget extends StatelessWidget {
+  final String? text;
+  const SubTitleWidget({super.key, this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text!,
+      style: const TextStyle(fontSize: fontSizeXXL),
+    );
+  }
+}

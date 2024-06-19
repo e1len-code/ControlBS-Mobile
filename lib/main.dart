@@ -3,6 +3,7 @@ import 'package:controlbs_mobile/core/config/valueListenables/theme_stuff.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
 import 'package:controlbs_mobile/features/file/presentation/provider/file_provider.dart';
+import 'package:controlbs_mobile/features/users/presentation/provider/user_provider.dart';
 import 'package:controlbs_mobile/injections.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -90,7 +91,8 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => getIt<AuthProvider>()),
     ChangeNotifierProvider(create: (_) => getIt<AttendanceProvider>()),
-    ChangeNotifierProvider(create: (_) => getIt<FileProvider>())
+    ChangeNotifierProvider(create: (_) => getIt<FileProvider>()),
+    ChangeNotifierProvider(create: (_) => getIt<UserProvider>())
   ], child: const MyApp()));
 }
 

@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late final FileProvider fileProvider;
   late final _keyAttendanceCheckBox = GlobalKey<AttendanceCheckBoxWidgetState>(
       debugLabel: '_keyAttendanceCheckBox');
-
+  final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
   String theme = "dark";
   @override
   void initState() {
@@ -98,6 +98,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
       await attendanceProvider.getAttendance(AttendanceReq(
           persIden: authProvider.authResponse.id, attnDtIn: DateTime.now()));
+      if (authProvider.authResponse.id != 0) {
+        await fileProvider.getPhoto('imgs/${authProvider.authResponse.id}.png');
+      }
     });
     WidgetsBinding.instance.addObserver(this);
   }
@@ -154,39 +157,100 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
-          Consumer<AuthProvider>(builder: (context, authProvider, child) {
-            return authProvider.authResponse.id != 0
-                ? TextButton(
-                    onPressed: () => {authProvider.logOut()},
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.close_outlined,
-                          color: Theme.of(context).colorScheme.onErrorContainer,
-                        ),
-                        Text(
-                          "Cerrar Sesión",
-                          style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onErrorContainer),
-                        ),
-                      ],
-                    ))
+          Consumer<FileProvider>(builder: (context, fileProvider, child) {
+            return fileProvider.photoImg != null &&
+                    fileProvider.photoImg!.isNotEmpty &&
+                    authProvider.authResponse.id != 0
+                ? CircleAvatar(
+                    backgroundImage:
+                        MemoryImage(base64Decode(fileProvider.photoImg!)))
                 : Container();
           }),
-          TextButton(
-              onPressed: () => context.go('/configtheme'),
-              child: const Icon(Icons.brush_outlined)),
-          Consumer<AuthProvider>(builder: (context, authProvider, child) {
-            return authProvider.authResponse.id != 0
-                ? TextButton(
-                    //onPressed: () => context.go('/signaturePage'),
-                    onPressed: () => displaySignatureModal(
-                        context, fileProvider, authProvider.authResponse.id),
-                    child: const Icon(Icons.draw_rounded))
-                : Container();
-          }),
+          MenuAnchor(
+            menuChildren: [
+              MenuItemButton(
+                child: const Row(
+                  children: [
+                    Icon(Icons.brush_outlined),
+                    Text("Configuración de tema")
+                  ],
+                ),
+                onPressed: () => context.go('/configtheme'),
+              ),
+              Consumer<AuthProvider>(builder: (context, authProvider, child) {
+                return authProvider.authResponse.id != 0
+                    ? MenuItemButton(
+                        child: const Row(
+                          children: [
+                            Icon(Icons.draw_rounded),
+                            Text(
+                              "Firma de reporte",
+                            )
+                          ],
+                        ),
+                        onPressed: () => displaySignatureModal(context,
+                            fileProvider, authProvider.authResponse.id),
+                      )
+                    : Container();
+              }),
+              Consumer<AuthProvider>(builder: (context, authProvider, child) {
+                return authProvider.authResponse.id != 0
+                    ? MenuItemButton(
+                        child: const Row(
+                          children: [
+                            Icon(Icons.camera_alt_rounded),
+                            Text(
+                              "Tomar foto de perfil",
+                            )
+                          ],
+                        ),
+                        onPressed: () => displaySignatureModal(context,
+                            fileProvider, authProvider.authResponse.id),
+                      )
+                    : Container();
+              }),
+              Consumer<AuthProvider>(builder: (context, authProvider, child) {
+                return authProvider.authResponse.id != 0
+                    ? MenuItemButton(
+                        child: Row(
+                          children: [
+                            Icon(Icons.close,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onErrorContainer),
+                            Text("Cerrar Sessión",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onErrorContainer))
+                          ],
+                        ),
+                        onPressed: () => {authProvider.logOut()},
+                      )
+                    : Container();
+              }),
+              MenuItemButton(
+                child: const Row(
+                  children: [Icon(Icons.brush_outlined), Text("Usuarios")],
+                ),
+                onPressed: () => context.go('/Usuarios'),
+              ),
+            ],
+            builder: (BuildContext context, MenuController controller,
+                Widget? child) {
+              return IconButton(
+                icon: const Icon(Icons.more_vert),
+                focusNode: _buttonFocusNode,
+                onPressed: () {
+                  if (controller.isOpen) {
+                    controller.close();
+                  } else {
+                    controller.open();
+                  }
+                },
+              );
+            },
+          ),
         ],
       ),
       body: Container(
@@ -284,31 +348,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 child: ValueListenableBuilder(
                     valueListenable: checkBoxValueNotifier.urlStatusCheck,
                     builder: (context, statusCheckN, child) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Consumer<AttendanceProvider>(
-                              builder: (context, attendanceProvider, child) {
-                            return attendanceProvider.isLoading
-                                ? const Center(
-                                    child: CircularProgressIndicator())
-                                : Consumer<AuthProvider>(
-                                    builder: (context, authProvider, child) {
-                                    return authProvider.authResponse.id != 0
-                                        ? AttendanceCheckBoxWidget(
-                                            key: _keyAttendanceCheckBox,
-                                            listAttendance: attendanceProvider
-                                                .listAttendance,
-                                          )
-                                        : AttendanceCheckBoxWidget(
-                                            key: _keyAttendanceCheckBox,
-                                            listAttendance: const [],
-                                          );
-                                  });
-                          }),
-                          //Text(statusCheckN)
-                        ],
-                      );
+                      return Consumer<AttendanceProvider>(
+                          builder: (context, attendanceProvider, child) {
+                        return attendanceProvider.isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : Consumer<AuthProvider>(
+                                builder: (context, authProvider, child) {
+                                return authProvider.authResponse.id != 0
+                                    ? AttendanceCheckBoxWidget(
+                                        key: _keyAttendanceCheckBox,
+                                        listAttendance:
+                                            attendanceProvider.listAttendance,
+                                      )
+                                    : AttendanceCheckBoxWidget(
+                                        key: _keyAttendanceCheckBox,
+                                        listAttendance: const [],
+                                      );
+                              });
+                      });
                     }),
               ),
             ),
@@ -341,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       .primaryContainer),
                               child: const Text('REVISAR ASISTENCIAS'),
                             ),
-                      const Text("Inicia sesión o revisa tus asistencias"),
+                      const Text("Inicia sesión / Revisa tus asistencias"),
                     ],
                   );
                 }),

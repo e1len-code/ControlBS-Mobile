@@ -1,3 +1,4 @@
+import 'package:controlbs_mobile/core/constants/size_config.dart';
 import 'package:flutter/material.dart';
 
 class InputPasswordWidget extends StatefulWidget {
@@ -27,6 +28,9 @@ class _InputPasswordWidgetState extends State<InputPasswordWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(
+          height: hspaceL,
+        ),
         Text(
           widget.label,
         ),

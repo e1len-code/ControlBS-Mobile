@@ -86,8 +86,8 @@ Future displaySignatureModal(
                           fileProvider.save(File(
                               fileiden: 0,
                               filename: persIden.toString(),
-                              filetype: 'png',
-                              filepath: '',
+                              filetype: 'image/png',
+                              filepath: 'Signatures/$persIden.png',
                               fileba64: base64));
                         }
                       },

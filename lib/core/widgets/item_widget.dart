@@ -18,7 +18,6 @@ class ItemWidget extends StatelessWidget {
               Theme.of(context).colorScheme.tertiaryContainer,
           borderRadius: BorderRadius.circular(15),
         ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, children: children));
+        child: Column(children: children));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:controlbs_mobile/core/constants/size_config.dart';
 import 'package:flutter/material.dart';
 
 class InputWidget extends StatelessWidget {
@@ -18,6 +19,9 @@ class InputWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(
+          height: hspaceL,
+        ),
         Text(
           label,
         ),

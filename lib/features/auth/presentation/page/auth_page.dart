@@ -6,6 +6,7 @@ import 'package:controlbs_mobile/features/attendance/domain/entities/attendance_
 import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart';
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
+import 'package:controlbs_mobile/features/file/presentation/provider/file_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class _AuthPageState extends State<AuthPage> {
   //AuthRepository authRepository = AuthRespositoryImple(remoteData: );
   late final AuthProvider authProvider;
   late final AttendanceProvider attendanceProvider;
+  late final FileProvider fileProvider;
 
   _sendLogin() {
     authProvider
@@ -31,6 +33,7 @@ class _AuthPageState extends State<AuthPage> {
         .then((value) {
       if (value.id != 0) {
         GoRouter.of(context).go('/');
+        fileProvider.getPhoto('imgs/${value.id}.png');
         attendanceProvider.getAttendance(AttendanceReq(
             persIden: value.id, attnDtIn: DateTime.now(), atttnDtFn: null));
       } else {}
@@ -42,6 +45,7 @@ class _AuthPageState extends State<AuthPage> {
     super.initState();
     authProvider = context.read<AuthProvider>();
     attendanceProvider = context.read<AttendanceProvider>();
+    fileProvider = context.read<FileProvider>();
   }
 
   @override
