@@ -8,7 +8,6 @@ import 'package:controlbs_mobile/features/auth/data/datasource/auth_local_data.d
 import 'package:controlbs_mobile/features/auth/data/datasource/auth_remote_data.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_response.dart';
-import 'package:controlbs_mobile/features/users/domain/entities/pers_update_pass.dart';
 import 'package:controlbs_mobile/injections.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';

@@ -6,7 +6,6 @@ import 'package:controlbs_mobile/core/network/headers.dart';
 import 'package:controlbs_mobile/core/utils/response_model.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_response.dart';
-import 'package:controlbs_mobile/features/users/domain/entities/pers_update_pass.dart';
 import 'package:controlbs_mobile/injections.dart';
 import 'package:http/http.dart' as http;
 
