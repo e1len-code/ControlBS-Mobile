@@ -3,6 +3,7 @@ import 'package:controlbs_mobile/details.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/page/attendance_page.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/page/attendance_page_edit.dart';
 import 'package:controlbs_mobile/features/auth/presentation/page/auth_page.dart';
+import 'package:controlbs_mobile/features/camera/presentation/page/camera_page.dart';
 import 'package:controlbs_mobile/features/file/presentation/page/sign_page.dart';
 import 'package:controlbs_mobile/features/users/presentation/page/user_form_page.dart';
 import 'package:controlbs_mobile/features/users/presentation/page/user_page.dart';
@@ -37,6 +38,11 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
+            path: 'camera',
+            builder: (BuildContext context, GoRouterState state) {
+              return const CameraPage();
+            }),
+        GoRoute(
           path: 'attendanceFilter',
           builder: (BuildContext context, GoRouterState state) {
             return const AttendacePage();
@@ -46,6 +52,12 @@ final GoRouter router = GoRouter(
           path: "signaturePage",
           builder: (BuildContext context, GoRouterState state) {
             return const SignPage();
+          },
+        ),
+        GoRoute(
+          path: "attendanceEdit",
+          builder: (BuildContext context, GoRouterState state) {
+            return const AttendancePageEdit();
           },
         ),
         GoRoute(
