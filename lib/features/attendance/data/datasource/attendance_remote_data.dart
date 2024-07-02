@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 abstract class AttendanceRemoteData {
   Future<bool?> save(Attendance attendance);
   Future<List<AttendanceResp?>> filter(AttendanceReq attendanceReq);
+  Future<String?> getReport(AttendanceReq attendanceReq);
 }
 
 class AttendanceRemoteDataImple implements AttendanceRemoteData {
@@ -52,11 +53,30 @@ class AttendanceRemoteDataImple implements AttendanceRemoteData {
             body: jsonEncode(attendanceReq.toJson()))
         .timeout(const Duration(seconds: timeout),
             onTimeout: () => throw TimeOutException());
-
     final data = Data.fromJson(
         jsonDecode(response.body),
         (value) =>
             response.statusCode == 200 ? AttendanceResp.fromJson(value) : null);
+    if (response.statusCode == 200) {
+      return data.value;
+    } else {
+      throw ApiResponseException(
+          statusCode: response.statusCode,
+          firstMessageError: data.errors.first.message);
+    }
+  }
+
+  @override
+  Future<String?> getReport(AttendanceReq attendanceReq) async {
+    final uri = Uri.parse('http://controlBS.somee.com/attendance/report');
+    var response = await client
+        .post(uri,
+            headers: getIt<Headers>().headers,
+            body: jsonEncode(attendanceReq.toJson()))
+        .timeout(const Duration(seconds: timeout),
+            onTimeout: () => throw TimeOutException());
+    final data = Data.fromJson(jsonDecode(response.body),
+        (value) => response.statusCode == 200 ? (value) : null);
     if (response.statusCode == 200) {
       return data.value;
     } else {

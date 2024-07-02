@@ -15,6 +15,7 @@ class AttendanceProvider with ChangeNotifier {
   bool isLoading = false;
   String error = '';
   bool saved = false;
+  String? base64Report = "";
 
   Future<int> filterList(AttendanceReq attendanceReq) async {
     isLoading = true;
@@ -67,5 +68,16 @@ class AttendanceProvider with ChangeNotifier {
         listFilterMapDates[fechaFormateada] = [elemento];
       }
     }
+  }
+
+  getReport(AttendanceReq attendanceReq) async {
+    isLoading = true;
+    error = '';
+    notifyListeners();
+    final result = await useCase.getReport(attendanceReq);
+    result.fold((failure) => error = failure.message,
+        (report) => base64Report = report);
+    isLoading = false;
+    notifyListeners();
   }
 }

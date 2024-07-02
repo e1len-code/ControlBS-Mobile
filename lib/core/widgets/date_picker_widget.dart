@@ -33,13 +33,15 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
               border: const OutlineInputBorder(),
               suffixIcon: widget.suffixIcon),
           controller: widget.controller,
-          readOnly: readOnly,
+          readOnly: true,
           onTap: () {
             showDatePicker(
               context: context,
-              initialDate: DateTime.now(),
+              initialDate: widget.controller!.text.isEmpty
+                  ? DateTime.now()
+                  : DateTime.parse(widget.controller!.text),
               firstDate: DateTime(2000),
-              lastDate: DateTime(2025),
+              lastDate: DateTime.now(),
             ).then((value) {
               if (value != null) {
                 String formattedDate = DateFormat('yyyy-MM-dd').format(value);

@@ -7,7 +7,7 @@ class AttendanceResp {
   final String persName;
   final String attnObse;
   final String attnUbic;
-  final DateTime? attnDate;
+  DateTime? attnDate;
 
   AttendanceResp(
       {required this.persIden,

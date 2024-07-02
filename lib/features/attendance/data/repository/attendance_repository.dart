@@ -13,6 +13,7 @@ abstract class AttendanceRepository {
   Future<Either<Failure, List<AttendanceResp?>>> filter(
       AttendanceReq attendanceReq);
   Future<Either<Failure, bool?>> save(Attendance attendance);
+  Future<Either<Failure, String?>> getReport(AttendanceReq attendanceReq);
 }
 
 class AttendanceRepositoryImple implements AttendanceRepository {
@@ -48,6 +49,27 @@ class AttendanceRepositoryImple implements AttendanceRepository {
       if (connected) {
         await getIt<Headers>().validateToken();
         final response = await remoteData.save(attendance);
+        return Right(response);
+      } else {
+        return Left(ConexionInternetFailure());
+      }
+    } on TimeOutException {
+      return Left(TimeOutFailure());
+    } on ApiResponseException catch (m) {
+      return Left(ApiResponseFailure(message: m.firstMessageError));
+    } catch (ex) {
+      return Left(ServerFailure(message: "Error intentelo mas tarde"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String?>> getReport(
+      AttendanceReq attendanceReq) async {
+    try {
+      bool connected = await InternetConnection().hasInternetAccess;
+      if (connected) {
+        await getIt<Headers>().validateToken();
+        final response = await remoteData.getReport(attendanceReq);
         return Right(response);
       } else {
         return Left(ConexionInternetFailure());

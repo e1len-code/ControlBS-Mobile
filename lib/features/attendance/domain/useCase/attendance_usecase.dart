@@ -12,6 +12,7 @@ abstract class AttendanceUseCase {
   Future<Either<Failure, List<AttendanceResp?>>> filter(
       AttendanceReq attendanceReq);
   Future<Either<Failure, bool?>> save(Attendance attendance);
+  Future<Either<Failure, String?>> getReport(AttendanceReq attendanceReq);
 }
 
 class AttendanceUseCaseImple implements AttendanceUseCase {
@@ -43,5 +44,10 @@ class AttendanceUseCaseImple implements AttendanceUseCase {
         }
       });
     });
+  }
+
+  @override
+  Future<Either<Failure, String?>> getReport(AttendanceReq attendanceReq) {
+    return repository.getReport(attendanceReq);
   }
 }
