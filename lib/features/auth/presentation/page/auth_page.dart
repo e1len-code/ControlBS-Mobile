@@ -33,7 +33,7 @@ class _AuthPageState extends State<AuthPage> {
         .then((value) {
       if (value.id != 0) {
         GoRouter.of(context).go('/');
-        fileProvider.getPhoto('imgs/${value.id}.png');
+        fileProvider.getPhoto('imgs/${value.id}.jpg');
         attendanceProvider.getAttendance(AttendanceReq(
             persIden: value.id, attnDtIn: DateTime.now(), atttnDtFn: null));
       } else {}

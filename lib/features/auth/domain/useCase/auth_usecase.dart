@@ -1,6 +1,7 @@
 import 'package:controlbs_mobile/core/errors/failures.dart';
 import 'package:controlbs_mobile/core/utils/crypto.dart';
 import 'package:controlbs_mobile/features/auth/data/repository/auth_repository.dart';
+import 'package:controlbs_mobile/features/auth/domain/entities/acceso.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_request.dart';
 import 'package:controlbs_mobile/features/auth/domain/entities/auth_response.dart';
 import 'package:dartz/dartz.dart';
@@ -8,6 +9,7 @@ import 'package:dartz/dartz.dart';
 abstract class AuthUseCase {
   Future<Either<Failure, AuthResponse?>> authLogin(AuthRequest authRequest);
   Future<Either<Failure, AuthResponse?>> authLoginLocal();
+  Future<Either<Failure, List<AuthAccess?>>> authAccess(int persIden);
   Future<void> delete();
 }
 
@@ -29,6 +31,14 @@ class AuthUseCaseImpl implements AuthUseCase {
         return Right(response.value);
       });
     }
+  }
+
+  @override
+  Future<Either<Failure, List<AuthAccess?>>> authAccess(int persIden) async {
+    final response = await authRepository.authAccess(persIden);
+    return response.fold(
+        (failure) => Left(DataFailure(message: failure.message)),
+        (auth) => Right(auth));
   }
 
   @override
