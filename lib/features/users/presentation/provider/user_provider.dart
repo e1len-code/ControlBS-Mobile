@@ -1,5 +1,6 @@
 import 'package:controlbs_mobile/features/users/domain/entities/pers_update_pass.dart';
 import 'package:controlbs_mobile/features/users/domain/entities/user.dart';
+import 'package:controlbs_mobile/features/users/domain/entities/user_break.dart';
 import 'package:controlbs_mobile/features/users/domain/useCase/user_usecase.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,7 @@ class UserProvider with ChangeNotifier {
   UserProvider({required this.useCase});
 
   List<User?> listUsers = [];
+  List<UserBreak?> listBreak = [];
   User? user;
 
   bool isLoading = false;
@@ -50,6 +52,18 @@ class UserProvider with ChangeNotifier {
     isLoading = false;
     notifyListeners();
     return saved;
+  }
+
+  Future<List<UserBreak?>?> getListBreak() async {
+    isLoading = true;
+    error = '';
+    notifyListeners();
+    final result = await useCase.getBreakList();
+    result.fold(
+        (failure) => error = failure.message, (list) => listBreak = list ?? []);
+    isLoading = false;
+    notifyListeners();
+    return listBreak;
   }
 
   Future<bool> updatePassword(PersUpdatePass persUpdatePass) async {

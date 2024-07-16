@@ -6,6 +6,7 @@ import 'package:controlbs_mobile/core/network/headers.dart';
 import 'package:controlbs_mobile/core/utils/response_model.dart';
 import 'package:controlbs_mobile/features/users/domain/entities/pers_update_pass.dart';
 import 'package:controlbs_mobile/features/users/domain/entities/user.dart';
+import 'package:controlbs_mobile/features/users/domain/entities/user_break.dart';
 import 'package:controlbs_mobile/injections.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,6 +15,7 @@ abstract class UserRemoteData {
   Future<List<User?>> list();
   Future<User?> get(int persIden);
   Future<bool?> updatePassword(PersUpdatePass oPersUpdatePass);
+  Future<List<UserBreak?>?> getListBreak();
 }
 
 class UserRemoteDataImple implements UserRemoteData {
@@ -56,6 +58,31 @@ class UserRemoteDataImple implements UserRemoteData {
 
     final data = Data.fromJson(jsonDecode(response.body),
         (value) => response.statusCode == 200 ? User.fromJson(value) : null);
+    if (response.statusCode == 200) {
+      return data.value;
+    } else {
+      throw ApiResponseException(
+          statusCode: response.statusCode,
+          firstMessageError: data.errors.first.message);
+    }
+  }
+
+  @override
+  Future<List<UserBreak?>?> getListBreak() async {
+    final uri = Uri.parse('http://controlBS.somee.com/person/daysBreak');
+    var response = await client
+        .get(
+          uri,
+          headers: getIt<Headers>().headers,
+        )
+        .timeout(const Duration(seconds: timeout),
+            onTimeout: () => throw TimeOutException());
+
+    final data = Data.fromJson(
+        jsonDecode(response.body),
+        (value) =>
+            response.statusCode == 200 ? UserBreak.fromJson(value) : null);
+
     if (response.statusCode == 200) {
       return data.value;
     } else {
