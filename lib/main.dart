@@ -17,7 +17,6 @@ import 'package:firebase_core/firebase_core.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
 }
 
 AndroidNotificationChannel? channel;
@@ -26,13 +25,7 @@ FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 late FirebaseMessaging messaging;
 
 void notificationTapBackground(NotificationResponse notificationResponse) {
-  print('notification(${notificationResponse.id}) action tapped: '
-      '${notificationResponse.actionId} with'
-      ' payload: ${notificationResponse.payload}');
-  if (notificationResponse.input?.isNotEmpty ?? false) {
-    print(
-        'notification action tapped with input: ${notificationResponse.input}');
-  }
+  if (notificationResponse.input?.isNotEmpty ?? false) {}
 }
 
 void main() async {
@@ -49,10 +42,6 @@ void main() async {
     provisional: false,
     sound: true,
   );
-
-  //If subscribe based sent notification then use this token
-  final fcmToken = await messaging.getToken();
-  print(fcmToken);
 
   //If subscribe based on topic then use this
   await messaging.subscribeToTopic('all');
@@ -72,9 +61,9 @@ void main() async {
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    final android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    final iOS = DarwinInitializationSettings();
-    final initSettings = InitializationSettings(android: android, iOS: iOS);
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iOS = DarwinInitializationSettings();
+    const initSettings = InitializationSettings(android: android, iOS: iOS);
 
     await flutterLocalNotificationsPlugin!.initialize(initSettings,
         onDidReceiveNotificationResponse: notificationTapBackground,
