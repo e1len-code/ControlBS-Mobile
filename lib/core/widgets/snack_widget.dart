@@ -7,12 +7,13 @@ class SnackWidget extends SnackBar {
         SnackWidget(
             Text(
               text,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
+              style: TextStyle(
+                  color: isError
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.primaryContainer),
             ),
             backgroundColor: isError
-                ? Theme.of(context).colorScheme.errorContainer
+                ? Colors.red
                 : Theme.of(context).colorScheme.primaryContainer),
       );
 
@@ -32,16 +33,4 @@ class SnackWidget extends SnackBar {
           duration: duration,
           backgroundColor: backgroundColor,
         );
-
-  /* Widget build(BuildContext context) {
-    return SnackBar(
-      backgroundColor: this.backgroundColor ?? this.backgroundColor,
-      content: content,
-      duration: Duration(seconds: this.seconds),
-      action: SnackBarAction(
-        label: 'ACTION',
-        onPressed: () {},
-      ),
-    );
-  } */
 }
