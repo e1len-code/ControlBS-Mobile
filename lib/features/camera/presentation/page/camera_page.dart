@@ -8,6 +8,7 @@ import 'package:controlbs_mobile/features/camera/presentation/widgets/capture_co
 import 'package:controlbs_mobile/features/camera/presentation/widgets/mode_controlrow_widget.dart';
 import 'package:controlbs_mobile/features/file/domain/entities/file.dart';
 import 'package:controlbs_mobile/features/file/presentation/provider/file_provider.dart';
+import 'package:controlbs_mobile/features/home_screen/widgets/thmbnail_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -377,8 +378,8 @@ class _CameraPageState extends State<CameraPage> {
                     CameraTogglesrowWidget(
                         cameras: _cameras,
                         controller: cameraController,
-                        onNewCameraSelected: _onNewCameraSelected)
-                    //_thmbnailWidget(),
+                        onNewCameraSelected: _onNewCameraSelected),
+                    ThmbnailWidget(controller: cameraController),
                   ],
                 ),
               ),
