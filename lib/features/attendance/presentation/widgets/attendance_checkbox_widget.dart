@@ -77,8 +77,20 @@ class AttendanceCheckBoxWidgetState extends State<AttendanceCheckBoxWidget> {
         return timeStatusVListenable.timeStatus.value.hour >= 12 &&
             timeStatusVListenable.timeStatus.value.hour < 14;
       case 3:
+        AttendanceResp? att = widget.listAttendance.firstWhere(
+            (element) => element!.attnLine == 2,
+            orElse: () => null);
+        int mins = 0;
+        if (att != null) {
+          mins = (timeStatusVListenable.timeStatus.value.minute -
+                  att.attnDate!.minute) +
+              (timeStatusVListenable.timeStatus.value.hour -
+                      att.attnDate!.hour) *
+                  60;
+        }
         return timeStatusVListenable.timeStatus.value.hour >= 13 &&
-            timeStatusVListenable.timeStatus.value.hour < 18;
+            timeStatusVListenable.timeStatus.value.hour < 18 &&
+            mins >= 10;
       case 4:
         return timeStatusVListenable.timeStatus.value.hour >= 18;
       default:
