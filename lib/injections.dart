@@ -5,9 +5,11 @@ import 'package:controlbs_mobile/features/attendance/domain/useCase/attendance_u
 import 'package:controlbs_mobile/features/attendance/presentation/bloc/attendance_bloc.dart';
 import 'package:controlbs_mobile/features/auth/data/datasource/auth_local_data.dart';
 import 'package:controlbs_mobile/features/auth/domain/useCase/auth_usecase.dart';
+import 'package:controlbs_mobile/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:controlbs_mobile/features/file/data/datasource/file_remote_data.dart';
 import 'package:controlbs_mobile/features/file/data/repository/file_repository.dart';
 import 'package:controlbs_mobile/features/file/domain/useCase/file_usecase.dart';
+import 'package:controlbs_mobile/features/file/presentation/bloc/file_provider_bloc.dart';
 import 'package:controlbs_mobile/features/users/data/datasource/user_remote_data.dart';
 import 'package:controlbs_mobile/features/users/data/repository/user_repository.dart';
 import 'package:controlbs_mobile/features/users/domain/useCase/user_usecase.dart';
@@ -20,6 +22,9 @@ final getIt = GetIt.instance;
 
 Future<void> init() async {
   getIt.registerFactory(() => AttendanceBloc(useCase: getIt()));
+  getIt.registerFactory(() => AuthBloc(useCase: getIt()));
+  getIt.registerFactory(() => FileProviderBloc(useCase: getIt()));
+  getIt.registerFactory(() => UserPro)
   //getIt.registerFactory(() => AttendanceProvider(useCase: getIt()));
   //getIt.registerFactory(() => FileProvider(useCase: getIt()));
   //getIt.registerFactory(() => UserProvider(useCase: getIt()));
