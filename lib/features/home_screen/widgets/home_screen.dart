@@ -1,10 +1,10 @@
-import 'package:controlbs_mobile/core/constants/size_config.dart';
 import 'package:controlbs_mobile/core/widgets/draw_svg_widget.dart';
 import 'package:controlbs_mobile/core/widgets/title_widget.dart';
-import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
-import 'package:controlbs_mobile/features/file/presentation/provider/file_provider.dart';
+import 'package:controlbs_mobile/features/attendance/presentation/bloc/attendance_bloc.dart';
+import 'package:controlbs_mobile/features/file/presentation/bloc/file_provider_bloc.dart'
+    as filebloc;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HeaderHomeScreen extends StatelessWidget {
   const HeaderHomeScreen({
@@ -20,18 +20,24 @@ class HeaderHomeScreen extends StatelessWidget {
           child: DrawSVGWidget(),
         ),
         const Center(child: TitleWidget(text: "CONTROL BS")),
-        Consumer2<AttendanceProvider, FileProvider>(
-            builder: (context, attendanceProvider, fileProvider, child) {
-          return attendanceProvider.isLoading || fileProvider.isLoading
-              ? const CircularProgressIndicator()
-              : Text(
-                  attendanceProvider.error + fileProvider.error,
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                      fontWeight: fontWeightBold,
-                      fontSize: fontSizeL),
-                );
-        }),
+        MultiBlocListener(listeners: [
+          BlocListener<AttendanceBloc, AttendanceState>(
+            listener: (context, state) {
+              if (state is ErrorState) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.message)));
+              }
+            },
+          ),
+          BlocListener<filebloc.FileBloc, filebloc.FileState>(
+            listener: (context, state) {
+              if (state is filebloc.ErrorState) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.message)));
+              }
+            },
+          ),
+        ], child: Container())
       ],
     );
   }

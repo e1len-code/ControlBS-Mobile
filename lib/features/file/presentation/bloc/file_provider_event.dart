@@ -1,13 +1,13 @@
 part of 'file_provider_bloc.dart';
 
-sealed class FileProviderEvent extends Equatable {
-  const FileProviderEvent();
+sealed class FileEvent extends Equatable {
+  const FileEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class SaveFileEvent extends FileProviderEvent {
+class SaveFileEvent extends FileEvent {
   final File file;
 
   const SaveFileEvent(this.file);
@@ -16,10 +16,10 @@ class SaveFileEvent extends FileProviderEvent {
   List<Object> get props => [file];
 }
 
-class GetFileEvent extends FileProviderEvent {
+class GetFileEvent extends FileEvent {
   final String filePath;
 
-  const GetFileEvent(this.filePath);
+  const GetFileEvent({required this.filePath});
 
   @override
   List<Object> get props => [filePath];

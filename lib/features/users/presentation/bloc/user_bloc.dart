@@ -10,14 +10,16 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserUseCase useCase;
+  //variablesBloc
+  List<UserBreak?>? listBreak = [];
   UserBloc({required this.useCase}) : super(UserInitial()) {
-    on<UserEvent>(getList);
+    on<UserListEvent>(getList);
     on<GetUserEvent>(getUser);
     on<SaveUserEvent>(save);
-    on<UserEvent>(gestListBreak);
+    on<GetBreakListEvent>(gestListBreak);
     on<UpdateUserPassword>(updatePassword);
   }
-  Future<void> getList(UserEvent event, Emitter<UserState> emit) async {
+  Future<void> getList(UserListEvent event, Emitter<UserState> emit) async {
     emit(LoadingState());
     final response = await useCase.list();
     response.fold((l) => emit(ErrorState(message: l.message)),
@@ -41,8 +43,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> gestListBreak(UserEvent event, Emitter<UserState> emit) async {
     emit(LoadingState());
     final response = await useCase.getBreakList();
-    response.fold((l) => emit(ErrorState(message: l.message)),
-        (r) => emit(GotListBreakState(userList: r)));
+    response.fold((l) => emit(ErrorState(message: l.message)), (r) {
+      listBreak = r;
+      emit(GotListBreakState(userList: r));
+    });
   }
 
   Future<void> updatePassword(

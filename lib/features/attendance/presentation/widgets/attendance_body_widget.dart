@@ -1,11 +1,12 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:controlbs_mobile/core/constants/size_config.dart';
 import 'package:controlbs_mobile/features/attendance/domain/entities/attendance_req.dart';
-import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
+import 'package:controlbs_mobile/features/attendance/presentation/bloc/attendance_bloc.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/widgets/attendance_list_widget.dart';
-import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
+import 'package:controlbs_mobile/features/auth/presentation/bloc/auth_bloc.dart'
+    as authbloc;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AttendanceBodyWidget extends StatefulWidget {
   const AttendanceBodyWidget({Key? key}) : super(key: key);
@@ -16,20 +17,21 @@ class AttendanceBodyWidget extends StatefulWidget {
 
 class _AttendanceBodyWidgetState extends State<AttendanceBodyWidget> {
   //final _nroDocController = TextEditingController();
-  late final AttendanceProvider attendanceProvider;
-  late final AuthProvider authProvider;
+  late final AttendanceBloc attendanceBloc;
+  late final authbloc.AuthBloc authBloc;
 
   @override
   void initState() {
     super.initState();
-    attendanceProvider = context.read<AttendanceProvider>();
-    authProvider = context.read<AuthProvider>();
+    attendanceBloc = context.read<AttendanceBloc>();
+    authBloc = context.read<authbloc.AuthBloc>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      attendanceProvider.filterList(AttendanceReq(
-        persIden: authProvider.authResponse.id,
+      attendanceBloc.add(FilterListEvent(
+          attendanceReq: AttendanceReq(
+        persIden: authBloc.authResponse!.id,
         attnDtIn: DateTime.now(),
-      ));
+      )));
     });
   }
 
@@ -40,10 +42,11 @@ class _AttendanceBodyWidgetState extends State<AttendanceBodyWidget> {
   // }
 
   void _search(List<DateTime?> listDates) {
-    attendanceProvider.filterList(AttendanceReq(
-        persIden: authProvider.authResponse.id,
-        attnDtIn: listDates.first,
-        atttnDtFn: listDates.last));
+    attendanceBloc.add(FilterListEvent(
+        attendanceReq: AttendanceReq(
+      persIden: authBloc.authResponse!.id,
+      attnDtIn: DateTime.now(),
+    )));
   }
 
   @override
@@ -62,14 +65,20 @@ class _AttendanceBodyWidgetState extends State<AttendanceBodyWidget> {
                 value: [DateTime.now()],
                 onValueChanged: (dates) => _search(dates),
               ),
-              Expanded(child: Consumer<AttendanceProvider>(
-                  builder: (context, attendanceProvider, child) {
-                return attendanceProvider.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : AttendanceListWidget(
-                        attendanceList: attendanceProvider.listFilterMapDates,
-                      );
-              }))
+              Expanded(child: BlocBuilder<AttendanceBloc, AttendanceState>(
+                builder: (context, state) {
+                  return state is LoadingState
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : state is GotListState
+                          ? AttendanceListWidget(
+                              attendanceList: attendanceBloc.listFilterMapDates)
+                          : const Center(
+                              child: Text("No hay datos"),
+                            );
+                },
+              ))
             ]));
   }
 }

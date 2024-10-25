@@ -1,17 +1,17 @@
 part of 'file_provider_bloc.dart';
 
-sealed class FileProviderState extends Equatable {
-  const FileProviderState();
+sealed class FileState extends Equatable {
+  const FileState();
 
   @override
   List<Object> get props => [];
 }
 
-final class FileProviderInitial extends FileProviderState {}
+final class FileInitial extends FileState {}
 
-class LoadingState extends FileProviderState {}
+class LoadingState extends FileState {}
 
-class ErrorState extends FileProviderState {
+class ErrorState extends FileState {
   final String message;
 
   const ErrorState({required this.message});
@@ -20,7 +20,7 @@ class ErrorState extends FileProviderState {
   List<Object> get props => [message];
 }
 
-class SavedState extends FileProviderState {
+class SavedState extends FileState {
   final bool? saved;
   const SavedState({this.saved});
 
@@ -28,7 +28,7 @@ class SavedState extends FileProviderState {
   List<Object> get props => [saved!];
 }
 
-class GotPhotoState extends FileProviderState {
+class GotPhotoState extends FileState {
   final String? photoImg;
   const GotPhotoState({this.photoImg});
 

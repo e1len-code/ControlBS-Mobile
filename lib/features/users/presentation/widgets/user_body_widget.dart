@@ -1,9 +1,8 @@
 import 'package:controlbs_mobile/core/constants/size_config.dart';
-import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
-import 'package:controlbs_mobile/features/users/presentation/provider/user_provider.dart';
+import 'package:controlbs_mobile/features/users/presentation/bloc/user_bloc.dart';
 import 'package:controlbs_mobile/features/users/presentation/widgets/user_list_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserBodyWidget extends StatefulWidget {
   const UserBodyWidget({Key? key}) : super(key: key);
@@ -14,17 +13,15 @@ class UserBodyWidget extends StatefulWidget {
 
 class _UserBodyWidgetState extends State<UserBodyWidget> {
   //final _nroDocController = TextEditingController();
-  late final UserProvider userProvider;
-  late final AuthProvider authProvider;
+  late final UserBloc userBloc;
 
   @override
   void initState() {
     super.initState();
-    userProvider = context.read<UserProvider>();
-    authProvider = context.read<AuthProvider>();
+    userBloc = context.read<UserBloc>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      userProvider.list();
+      userBloc.add(UserListEvent());
     });
   }
 
@@ -35,7 +32,7 @@ class _UserBodyWidgetState extends State<UserBodyWidget> {
   // }
 
   void _search(List<DateTime?> listDates) {
-    userProvider.list();
+    userBloc.add(UserListEvent());
   }
 
   @override
@@ -47,14 +44,26 @@ class _UserBodyWidgetState extends State<UserBodyWidget> {
             crossAxisAlignment: CrossAxisAlignment.end,
             //mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(child: Consumer<UserProvider>(
-                  builder: (context, userProvider, child) {
-                return userProvider.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : UserListWidget(
-                        userList: userProvider.listUsers,
-                      );
-              }))
+              BlocBuilder<UserBloc, UserState>(
+                bloc: userBloc,
+                builder: (context, state) {
+                  if (state is LoadingState) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is GotListState) {
+                    return UserListWidget(userList: state.userList);
+                  } else if (state is ErrorState) {
+                    return Center(
+                      child: Text(state.message),
+                    );
+                  } else {
+                    return const Center(
+                      child: Text("No hay datos"),
+                    );
+                  }
+                },
+              ),
             ]));
   }
 }

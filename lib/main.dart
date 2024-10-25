@@ -1,6 +1,9 @@
 import 'package:controlbs_mobile/core/constants/color_schemes.g.dart';
 import 'package:controlbs_mobile/core/config/valueListenables/theme_stuff.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/bloc/attendance_bloc.dart';
+import 'package:controlbs_mobile/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:controlbs_mobile/features/file/presentation/bloc/file_provider_bloc.dart';
+import 'package:controlbs_mobile/features/users/presentation/bloc/user_bloc.dart';
 import 'package:controlbs_mobile/injections.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -75,7 +78,10 @@ void main() async {
 
   await di.init();
   runApp(MultiBlocProvider(providers: [
-    BlocProvider<AttendanceBloc>(create: (_) => getIt<AttendanceBloc>())
+    BlocProvider<AttendanceBloc>(create: (_) => getIt<AttendanceBloc>()),
+    BlocProvider<FileBloc>(create: (_) => getIt<FileBloc>()),
+    BlocProvider<AuthBloc>(create: (_) => getIt<AuthBloc>()),
+    BlocProvider<UserBloc>(create: (_) => getIt<UserBloc>())
     //ChangeNotifierProvider(create: (_) => getIt<AttendanceProvider>()),
     //ChangeNotifierProvider(create: (_) => getIt<FileProvider>()),
     //ChangeNotifierProvider(create: (_) => getIt<UserProvider>())

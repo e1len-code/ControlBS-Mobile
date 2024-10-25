@@ -5,7 +5,12 @@ import 'package:controlbs_mobile/core/config/valueListenables/time_status.dart';
 import 'package:controlbs_mobile/core/widgets/snack_widget.dart';
 import 'package:controlbs_mobile/features/attendance/domain/entities/attendance.dart';
 import 'package:controlbs_mobile/features/attendance/domain/entities/attendance_req.dart';
+import 'package:controlbs_mobile/features/attendance/presentation/bloc/attendance_bloc.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/widgets/attendance_checkbox_widget.dart';
+import 'package:controlbs_mobile/features/auth/presentation/bloc/auth_bloc.dart'
+    as authbloc;
+import 'package:controlbs_mobile/features/file/presentation/bloc/file_provider_bloc.dart'
+    as filebloc;
 import 'package:controlbs_mobile/features/home_screen/widgets/attendance_checkbox_screen.dart';
 import 'package:controlbs_mobile/features/home_screen/widgets/calendar_break.dart';
 import 'package:controlbs_mobile/features/home_screen/widgets/footer_screen.dart';
@@ -16,8 +21,8 @@ import 'package:controlbs_mobile/features/home_screen/widgets/photo_perfil.dart'
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:provider/provider.dart';
 
 import 'main.dart';
 
@@ -36,9 +41,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   TimeStatusVListenable timeStatusVListenable =
       TimeStatusVListenable.instance();
 
-  late final AuthProvider authProvider;
-  late final AttendanceProvider attendanceProvider;
-  late final FileProvider fileProvider;
+  late final authbloc.AuthBloc authProvider;
+  late final AttendanceBloc attendanceProvider;
+  late final filebloc.FileBloc fileProvider;
   late final _keyAttendanceCheckBox = GlobalKey<AttendanceCheckBoxWidgetState>(
       debugLabel: '_keyAttendanceCheckBox');
   final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
@@ -49,9 +54,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     // TODO: implement initState
     super.initState();
     // Init provider
-    authProvider = context.read<AuthProvider>();
-    attendanceProvider = context.read<AttendanceProvider>();
-    fileProvider = context.read<FileProvider>();
+    authProvider = context.read<authbloc.AuthBloc>();
+    attendanceProvider = context.read<AttendanceBloc>();
+    fileProvider = context.read<filebloc.FileBloc>();
 
     // Noitifications
     setupInteractedMessage();
@@ -98,12 +103,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     // after to load the screen
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await authProvider.authLoginLocal();
+      authProvider.add(authbloc.AuthLoginEvent());
 
-      await attendanceProvider.getAttendance(AttendanceReq(
-          persIden: authProvider.authResponse.id, attnDtIn: DateTime.now()));
-      if (authProvider.authResponse.id != 0) {
-        await fileProvider.getPhoto('imgs/${authProvider.authResponse.id}.jpg');
+      attendanceProvider.add(GetListEvent(
+          attendanceReq: AttendanceReq(
+              persIden: authProvider.authResponse?.id ?? 0,
+              attnDtIn: DateTime.now())));
+      if (authProvider.authResponse?.id != 0) {
+        fileProvider.add(filebloc.GetFileEvent(
+            filePath: 'imgs/${authProvider.authResponse?.id}.jpg'));
       }
     });
     WidgetsBinding.instance.addObserver(this);
@@ -148,19 +156,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     Attendance attendanceSaved = Attendance(
       attnIden: 0,
       attnline: _keyAttendanceCheckBox.currentState!.nroCheckBoxSelectedF,
-      persIden: authProvider.authResponse.id,
+      persIden: authProvider.authResponse?.id ?? 0,
       attnUbic: "",
       attnDate: DateTime.now(),
     );
-    attendanceProvider.save(attendanceSaved).then((saved) {
-      if (saved) {
-        SnackWidget.showMessage(context, "Se guardó la asistencia");
-      } else {
-        SnackWidget.showMessage(context, "No se guardó la asistencia",
-            isError: true);
-      }
-    });
-
+    attendanceProvider.add(SaveEvent(attendance: attendanceSaved));
     checkBoxValueNotifier.updateValue(attendanceSaved.attnline + 1);
   }
 
@@ -169,10 +169,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          PhotoPerfilWidget(authProvider: authProvider),
+          PhotoPerfilWidget(authBloc: authProvider),
           MenuAnchorWidget(
               context: context,
-              fileProvider: fileProvider,
+              fileBloc: fileProvider,
               buttonFocusNode: _buttonFocusNode),
         ],
       ),
@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Expanded(
             flex: 1,
             child: MarcarAsistenciaButtonWidget(
-              authProvider: authProvider,
+              authBloc: authProvider,
               saveAttendance: _saveAttendance,
             ),
           ),
@@ -201,7 +201,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           const Expanded(
             flex: 1,
             child: FooterWidget(),
-          )
+          ),
+          BlocConsumer<AttendanceBloc, AttendanceState>(
+            listener: (context, state) {
+              if (state is SavedState) {
+                SnackWidget.showMessage(context, "Se guardó la asistencia");
+              } else if (state is ErrorState) {
+                SnackWidget.showMessage(context, state.message);
+              }
+            },
+            builder: (context, state) {
+              return Container();
+            },
+          ),
         ],
       ),
     );

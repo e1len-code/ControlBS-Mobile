@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:controlbs_mobile/core/widgets/snack_widget.dart';
-import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
+import 'package:controlbs_mobile/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:controlbs_mobile/features/camera/presentation/widgets/camera_preview_widget.dart';
 import 'package:controlbs_mobile/features/camera/presentation/widgets/camera_togglesrow_widget.dart';
 import 'package:controlbs_mobile/features/camera/presentation/widgets/capture_controlrow_widget.dart';
 import 'package:controlbs_mobile/features/camera/presentation/widgets/mode_controlrow_widget.dart';
 import 'package:controlbs_mobile/features/file/domain/entities/file.dart';
-import 'package:controlbs_mobile/features/file/presentation/provider/file_provider.dart';
+import 'package:controlbs_mobile/features/file/presentation/bloc/file_provider_bloc.dart'
+    as filebloc;
 import 'package:controlbs_mobile/features/home_screen/widgets/thmbnail_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,8 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   List<CameraDescription> _cameras = <CameraDescription>[];
   CameraController? cameraController;
-  late final FileProvider fileProvider;
-  late final AuthProvider authProvider;
+  late final filebloc.FileBloc fileBloc;
+  late final AuthBloc authBloc;
   bool enableAudio = true;
   XFile? imageFile;
   XFile? videoFile;
@@ -38,8 +39,8 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
-    fileProvider = context.read<FileProvider>();
-    authProvider = context.read<AuthProvider>();
+    fileBloc = context.read<filebloc.FileBloc>();
+    authBloc = context.read<AuthBloc>();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _cameras = await availableCameras();
       if (_cameras.isNotEmpty) {
@@ -179,19 +180,12 @@ class _CameraPageState extends State<CameraPage> {
         bool saved = false;
         if (imageFile != null) {
           imageFile!.readAsBytes().then((value) async {
-            saved = await fileProvider.save(File(
+            fileBloc.add(filebloc.SaveFileEvent(File(
                 fileiden: 0,
-                filename: authProvider.authResponse.id.toString(),
+                filename: authBloc.authResponse!.id.toString(),
                 filetype: 'image/jpg',
-                filepath: 'imgs/${authProvider.authResponse.id}.jpg',
-                fileba64: base64Encode(value)));
-            if (mounted) {
-              saved
-                  ? SnackWidget.showMessage(
-                      context, 'la imagen se guardo correctamente')
-                  : SnackWidget.showMessage(
-                      context, 'Error al guardar la imagennnnnnnnnn');
-            }
+                filepath: 'imgs/${authBloc.authResponse!.id}.jpg',
+                fileba64: base64Encode(value))));
           });
         }
       }

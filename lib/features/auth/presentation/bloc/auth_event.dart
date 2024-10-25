@@ -7,11 +7,15 @@ sealed class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AuthLoginEvent extends AuthEvent {
+class AuthReqEvent extends AuthEvent {
   final AuthRequest authRequest;
 
-  AuthLoginEvent(this.authRequest);
+  AuthReqEvent(this.authRequest);
 
   @override
   List<Object> get props => [authRequest];
 }
+
+class AuthLoginEvent extends AuthEvent {}
+
+class LogOutEvent extends AuthEvent {}

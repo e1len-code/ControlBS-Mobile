@@ -13,6 +13,7 @@ import 'package:controlbs_mobile/features/file/presentation/bloc/file_provider_b
 import 'package:controlbs_mobile/features/users/data/datasource/user_remote_data.dart';
 import 'package:controlbs_mobile/features/users/data/repository/user_repository.dart';
 import 'package:controlbs_mobile/features/users/domain/useCase/user_usecase.dart';
+import 'package:controlbs_mobile/features/users/presentation/bloc/user_bloc.dart';
 import 'package:http/http.dart' as client;
 import 'package:controlbs_mobile/features/auth/data/datasource/auth_remote_data.dart';
 import 'package:controlbs_mobile/features/auth/data/repository/auth_repository.dart';
@@ -23,8 +24,8 @@ final getIt = GetIt.instance;
 Future<void> init() async {
   getIt.registerFactory(() => AttendanceBloc(useCase: getIt()));
   getIt.registerFactory(() => AuthBloc(useCase: getIt()));
-  getIt.registerFactory(() => FileProviderBloc(useCase: getIt()));
-  getIt.registerFactory(() => UserPro)
+  getIt.registerFactory(() => FileBloc(useCase: getIt()));
+  getIt.registerFactory(() => UserBloc(useCase: getIt()));
   //getIt.registerFactory(() => AttendanceProvider(useCase: getIt()));
   //getIt.registerFactory(() => FileProvider(useCase: getIt()));
   //getIt.registerFactory(() => UserProvider(useCase: getIt()));

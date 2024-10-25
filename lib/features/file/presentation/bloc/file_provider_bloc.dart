@@ -6,25 +6,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'file_provider_event.dart';
 part 'file_provider_state.dart';
 
-class FileProviderBloc extends Bloc<FileProviderEvent, FileProviderState> {
+class FileBloc extends Bloc<FileEvent, FileState> {
   final FileUseCase useCase;
-  FileProviderBloc({required this.useCase}) : super(FileProviderInitial()) {
+  //variablesBloc
+  String? photoImg = "";
+  FileBloc({required this.useCase}) : super(FileInitial()) {
     on<SaveFileEvent>(save);
     on<GetFileEvent>(getPhoto);
   }
-  Future<void> save(
-      SaveFileEvent event, Emitter<FileProviderState> emit) async {
+  Future<void> save(SaveFileEvent event, Emitter<FileState> emit) async {
     emit(LoadingState());
     final response = await useCase.save(event.file);
     response.fold((l) => emit(ErrorState(message: l.message)),
         (r) => emit(SavedState(saved: r)));
   }
 
-  Future<void> getPhoto(
-      GetFileEvent event, Emitter<FileProviderState> emit) async {
+  Future<void> getPhoto(GetFileEvent event, Emitter<FileState> emit) async {
     emit(LoadingState());
     final response = await useCase.getPhoto(event.filePath);
-    response.fold((l) => emit(ErrorState(message: l.message)),
-        (r) => emit(GotPhotoState(photoImg: r)));
+    response.fold((l) => emit(ErrorState(message: l.message)), (r) {
+      photoImg = r;
+      emit(GotPhotoState(photoImg: r));
+    });
   }
 }

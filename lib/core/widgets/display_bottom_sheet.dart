@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:controlbs_mobile/features/file/domain/entities/file.dart';
 
 import 'package:controlbs_mobile/core/constants/size_config.dart';
-import 'package:controlbs_mobile/features/file/presentation/provider/file_provider.dart';
+import 'package:controlbs_mobile/features/file/presentation/bloc/file_provider_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hand_signature/signature.dart';
@@ -15,7 +15,7 @@ HandSignatureControl control = HandSignatureControl(
 );
 
 Future displaySignatureModal(
-    BuildContext context, FileProvider fileProvider, int persIden) {
+    BuildContext context, FileBloc fileBloc, int persIden) {
   return showModalBottomSheet(
       context: context,
       //isDismissible: false,
@@ -83,12 +83,12 @@ Future displaySignatureModal(
                         if (signature != null) {
                           String base64 =
                               base64Encode(signature.buffer.asUint8List());
-                          fileProvider.save(File(
+                          fileBloc.add(SaveFileEvent(File(
                               fileiden: 0,
                               filename: persIden.toString(),
                               filetype: 'image/png',
                               filepath: 'Signatures/$persIden.png',
-                              fileba64: base64));
+                              fileba64: base64)));
                         }
                       },
                       style: ElevatedButton.styleFrom(

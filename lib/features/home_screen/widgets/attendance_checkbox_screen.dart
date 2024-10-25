@@ -1,8 +1,10 @@
 import 'package:controlbs_mobile/core/config/valueListenables/checkbox_status.dart';
-import 'package:controlbs_mobile/features/attendance/presentation/provider/attendance_provider.dart';
+import 'package:controlbs_mobile/features/attendance/presentation/bloc/attendance_bloc.dart';
 import 'package:controlbs_mobile/features/attendance/presentation/widgets/attendance_checkbox_widget.dart';
-import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
+import 'package:controlbs_mobile/features/auth/presentation/bloc/auth_bloc.dart'
+    as authbloc;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class AttendaceCheckBoxScreen extends StatelessWidget {
@@ -17,26 +19,36 @@ class AttendaceCheckBoxScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: checkBoxValueNotifier.urlStatusCheck,
-        builder: (context, statusCheckN, child) {
-          return Consumer<AttendanceProvider>(
-              builder: (context, attendanceProvider, child) {
-            return attendanceProvider.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : Consumer<AuthProvider>(
-                    builder: (context, authProvider, child) {
-                    return authProvider.authResponse.id != 0
-                        ? AttendanceCheckBoxWidget(
-                            key: _keyAttendanceCheckBox,
-                            listAttendance: attendanceProvider.listAttendance,
-                          )
-                        : AttendanceCheckBoxWidget(
-                            key: _keyAttendanceCheckBox,
-                            listAttendance: const [],
-                          );
-                  });
-          });
-        });
+    authbloc.AuthBloc authBloc = context.read<authbloc.AuthBloc>();
+    AttendanceBloc attendanceBloc = context.read<AttendanceBloc>();
+
+    return BlocBuilder<AttendanceBloc, AttendanceState>(
+      bloc: attendanceBloc,
+      builder: (context, state) {
+        if (state is LoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return BlocBuilder<authbloc.AuthBloc, authbloc.AuthState>(
+              bloc: authBloc,
+              builder: (context, state) {
+                if (state is LoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  if (authBloc.authResponse!.id != 0) {
+                    return AttendanceCheckBoxWidget(
+                      key: _keyAttendanceCheckBox,
+                      listAttendance: attendanceBloc.listAttendance,
+                    );
+                  } else {
+                    return AttendanceCheckBoxWidget(
+                      key: _keyAttendanceCheckBox,
+                      listAttendance: const [],
+                    );
+                  }
+                }
+              });
+        }
+      },
+    );
   }
 }

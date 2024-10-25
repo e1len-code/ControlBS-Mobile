@@ -28,3 +28,5 @@ class AuthenticatedState extends AuthState {
   @override
   List<Object> get props => [authResponse!];
 }
+
+class LogOutState extends AuthState {}
