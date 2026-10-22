@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## Requisitos
+
+- Flutter 3.47.7 (canal `stable`) o superior
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
