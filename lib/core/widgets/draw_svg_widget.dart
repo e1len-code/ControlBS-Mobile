@@ -64,7 +64,9 @@ class DrawSVGWidgetState extends State<DrawSVGWidget> {
                         min: 1,
                         max: 4,
                         divisions: 3,
-                        value: status.toDouble().clamp(1, 4),
+                        value: (status >= 1 && status <= 4)
+                            ? status.toDouble()
+                            : 2.0,
                         onChanged: null,
                       ),
                       const Padding(
