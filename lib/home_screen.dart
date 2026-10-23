@@ -10,7 +10,6 @@ import 'package:controlbs_mobile/features/attendance/presentation/widgets/attend
 import 'package:controlbs_mobile/features/auth/presentation/provider/auth_provider.dart';
 import 'package:controlbs_mobile/features/file/presentation/provider/file_provider.dart';
 import 'package:controlbs_mobile/features/home_screen/widgets/attendance_checkbox_screen.dart';
-import 'package:controlbs_mobile/features/home_screen/widgets/calendar_break.dart';
 import 'package:controlbs_mobile/features/home_screen/widgets/footer_screen.dart';
 import 'package:controlbs_mobile/features/home_screen/widgets/home_screen.dart';
 import 'package:controlbs_mobile/features/home_screen/widgets/iniciar_sesion_button.dart';
@@ -144,8 +143,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       timeStatusVListenable
           .updateTime(); // Actualiza la hora cuando la aplicación se reanuda
-      checkBoxValueNotifier.statusCheckName(
-          _keyAttendanceCheckBox.currentState!.nroCheckBoxSelected);
+      checkBoxValueNotifier.updateValueByTime();
     }
   }
 
@@ -166,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       }
     });
 
-    checkBoxValueNotifier.updateValue(attendanceSaved.attnline + 1);
+    checkBoxValueNotifier.updateValueByTime();
   }
 
   @override
@@ -185,8 +183,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          //const Expanded(flex: 3, child: HeaderHomeScreen()),
-          const Expanded(flex: 3, child: CalendarBreak()),
+          const Expanded(flex: 3, child: HeaderHomeScreen()),
           Expanded(
             flex: 1,
             child: MarcarAsistenciaButtonWidget(
